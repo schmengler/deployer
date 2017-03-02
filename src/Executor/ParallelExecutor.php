@@ -276,7 +276,7 @@ class ParallelExecutor implements ExecutorInterface
             $this->informer->taskException($serverName, $exceptionClass, $message);
 
             // Save exception.
-            $this->lastException = new $exceptionClass($message);
+            $this->saveException($exceptionClass, $message);
 
             // We got some exception, so not.
             $this->isSuccessfullyFinished = false;
@@ -377,5 +377,18 @@ class ParallelExecutor implements ExecutorInterface
                 }
             }
         }
+    }
+
+    /**
+     * @param $exceptionClass
+     * @param $message
+     */
+    private function saveException($exceptionClass, $message)
+    {
+        // exceptions that take a Process instance as constructor argument cannot be instantiated
+        if ($exceptionClass === \Symfony\Component\Process\Exception\RuntimeException::class) {
+            $exceptionClass = \RuntimeException::class;
+        }
+        $this->lastException = new $exceptionClass($message);
     }
 }
