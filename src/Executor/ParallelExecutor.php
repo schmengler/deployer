@@ -386,7 +386,7 @@ class ParallelExecutor implements ExecutorInterface
     private function saveException($exceptionClass, $message)
     {
         // exceptions that take a Process instance as constructor argument cannot be instantiated
-        if ($exceptionClass === \Symfony\Component\Process\Exception\RuntimeException::class) {
+        if (is_a($exceptionClass, \Symfony\Component\Process\Exception\RuntimeException::class, true)) {
             $exceptionClass = \RuntimeException::class;
         }
         $this->lastException = new $exceptionClass($message);
